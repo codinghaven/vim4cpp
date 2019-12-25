@@ -2,23 +2,24 @@
 
 let s:file_name = expand("%:t") 
 
-function! CheckIfEmpty(name)
-	if(filereadable(a:name))
-		let l:data = readfile(a:name) 
-		for d in data
-			if(d == '')
-				continue
-			else
-				return 1
-			endif
-		endfor
-	endif	
+function! FileNotEmpty(name)
+	if(!filereadable(a:name))
+		return 0
+	endif
+
+	let l:data = readfile(a:name) 
+	for d in data
+		if(d == '')
+			continue
+		endif
+		return 1
+	endfor
 
 	return 0
 endfunction
 
 function! TryHeaderInsertion() 
-	if(CheckIfEmpty(s:file_name))
+	if(FileNotEmpty(s:file_name))
 		return 
 	endif
 	let l:file_parts = split(s:file_name, "[.]")
