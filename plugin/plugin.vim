@@ -30,4 +30,20 @@ function! TryHeaderInsertion()
 	endif
 endfunction
 
+function! MakeMain()
+	call setline('.', ["#include <iostream>", "","using namespace std;","","int main(int argc, char** argv) {", "", ""])
+	execute "normal! 7Gi\<tab>return 0;"
+	call append(line('$'), "}")
+endfunction
+	
+function TryMainInsertion()
+	if(FileNotEmpty(s:file_name))
+		return
+	endif
+	if(tolower(s:file_name) == "main.cpp") 
+		call MakeMain()
+	endif
+endfunction
+
 call TryHeaderInsertion() 
+call TryMainInsertion()
