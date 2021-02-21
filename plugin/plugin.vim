@@ -1,6 +1,7 @@
 " Entry point for the plugin
 
 function! FileNotEmpty(name)
+    echom a:name
 	if(!filereadable(a:name))
 		return 0
 	endif
@@ -46,8 +47,8 @@ endfunction
 function! CheckForNewBuffer() 
     augroup MyGroup
         autocmd!
-        autocmd BufRead,BufNewFile main.cpp call TryMainInsertion(expand("%:t"))
-        autocmd BufRead,BufNewFile *.h* call TryHeaderInsertion(expand("%:t"))
+        autocmd BufRead,BufNewFile main.cpp call TryMainInsertion(expand("%:p"))
+        autocmd BufRead,BufNewFile *.h* call TryHeaderInsertion(expand("%:p"))
     augroup END
 endfunction
 
