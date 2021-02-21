@@ -17,10 +17,11 @@ function! FileNotEmpty(name)
 	return 0
 endfunction
 
-function! TryHeaderInsertion(file_name) 
-	if(FileNotEmpty(a:file_name))
+function! TryHeaderInsertion(file_path, file_name) 
+	if(FileNotEmpty(a:file_path))
 		return 
 	endif
+
 	let l:file_parts = split(a:file_name, "[.]")
 	if(len(l:file_parts) > 1 && file_parts[len(l:file_parts)-1][0] == 'h')
 		call append(0,"#ifndef " . toupper(l:file_parts[0]) . "_H_DEFINE")
@@ -30,13 +31,12 @@ function! TryHeaderInsertion(file_name)
 endfunction
 
 function! MakeMain()
-	call setline('.', ["#include <iostream>", "","using namespace std;","","int main(int argc, char** argv) {", "", ""])
-	execute "normal! 7Gi\<tab>return 0;"
-	call append(line('$'), "}")
+    execute "normal! G"
+	call setline('.', ["#include <iostream>", "","using namespace std;","","int main(int argc, char** argv) {", "", "\treturn 0;", "", "}"])
 endfunction
 	
-function TryMainInsertion(file_name)
-	if(FileNotEmpty(a:file_name))
+function TryMainInsertion(file_path, file_name)
+	if(FileNotEmpty(a:file_path))
 		return
 	endif
 	if(tolower(a:file_name) == "main.cpp") 
@@ -47,8 +47,8 @@ endfunction
 function! CheckForNewBuffer() 
     augroup MyGroup
         autocmd!
-        autocmd BufRead,BufNewFile main.cpp call TryMainInsertion(expand("%:p"))
-        autocmd BufRead,BufNewFile *.h* call TryHeaderInsertion(expand("%:p"))
+        autocmd BufRead,BufNewFile main.cpp call TryMainInsertion(expand("%:p"), expand("%:t"))
+        autocmd BufRead,BufNewFile *.h* call TryHeaderInsertion(expand("%:p"), expand("%:t"))
     augroup END
 endfunction
 
